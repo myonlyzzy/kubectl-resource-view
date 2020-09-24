@@ -7,7 +7,7 @@ test:
 
 .PHONY: bin
 bin: fmt vet
-	go build -o bin/kubectl-resource-view github.com/myonlyzzy/kubectl-resource-view/cmd/plugin
+	go build -o bin/kubectl-resource_view github.com/myonlyzzy/kubectl-resource-view/cmd/plugin
 
 .PHONY: fmt
 fmt:

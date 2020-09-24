@@ -33,7 +33,7 @@ func getNodeResource(cli *kubernetes.Clientset, cmd *cobra.Command) error {
 	selector := util.GetFlagString(cmd, "selector")
 	fieldSelector := util.GetFlagString(cmd, "field-selector")
 	nodeName := util.GetFlagString(cmd, "node")
-	fmt.Printf("Node:\t\t\t\tCPU\tMemory\t\tCPURequests\tCPULimits\tMemoryRequests\t\tMemoryLimits\n")
+	fmt.Printf("Node:\t\tCPU\tMemory\t\tCPURequests\tCPULimits\tMemoryRequests\t\tMemoryLimits\n")
 	if len(nodeName) > 0 {
 		node, err := cli.CoreV1().Nodes().Get(context.TODO(), nodeName, metav1.GetOptions{})
 		if err != nil {
@@ -115,12 +115,9 @@ func describeNodeResource(nodeNonTerminatedPodsList *corev1.PodList, node *corev
 		fractionMemoryReqs = float64(memoryReqs.Value()) / float64(allocatable.Memory().Value()) * 100
 		fractionMemoryLimits = float64(memoryLimits.Value()) / float64(allocatable.Memory().Value()) * 100
 	}
-	//resourcePrinter:=printers.NewTablePrinter(printers.PrintOptions{})
-	//tableWriter:=printers.GetNewTabWriter(os.Stdout)
-	//tableWriter.RememberedWidths()
 	//TODO
 	fmt.Printf("%s\t%s\t%fG", node.Name, allocatablecpu.String(), float64(allocatablememory.Value()/1024/1024/1024))
 	fmt.Printf("\t%.2fcore (%d%%)\t%.2fcore(%d%%)", float64(cpuReqs.MilliValue())/float64(1000), int64(fractionCpuReqs), float64(cpuLimits.MilliValue())/float64(1000), int64(fractionCpuLimits))
 	//fmt.Printf("%s\t%s (%d%%)\t%s (%d%%)\n", corev1.ResourceCPU, cpuReqs.String(), int64(fractionCpuReqs), cpuLimits.String(), int64(fractionCpuLimits))
-	fmt.Printf("\t%s (%d%%)\t%s (%d%%)\n", memoryReqs.String(), int64(fractionMemoryReqs), memoryLimits.String(), int64(fractionMemoryLimits))
+	fmt.Printf("\t%s (%d%%)\t\t%s (%d%%)\n", memoryReqs.String(), int64(fractionMemoryReqs), memoryLimits.String(), int64(fractionMemoryLimits))
 }
