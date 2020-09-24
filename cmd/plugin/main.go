@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/{{ .Owner }}/{{ .Repo }}/cmd/plugin/cli"
+	"github.com/myonlyzzy/kubectl-resource-view/cmd/plugin/cli"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp" // required for GKE
 )
 

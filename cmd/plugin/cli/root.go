@@ -2,17 +2,14 @@ package cli
 
 import (
 	"fmt"
-	"os"
-	"strings"
-	"time"
-
-	"github.com/{{ .Owner }}/{{ .Repo }}/pkg/logger"
-	"github.com/{{ .Owner }}/{{ .Repo }}/pkg/plugin"
+	"github.com/myonlyzzy/kubectl-resource-view/pkg/logger"
+	"github.com/myonlyzzy/kubectl-resource-view/pkg/plugin"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/tj/go-spin"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
+	"os"
+	"strings"
 )
 
 var (
@@ -21,9 +18,22 @@ var (
 
 func RootCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:           "{{ .PluginName }}",
-		Short:         "",
-		Long:          `.`,
+		Use:   "kubectl-resource-view  NODENAME ) [flags]",
+		Short: "Display Node resources",
+		Long: `Display Node resources
+Examples:
+  # Show all nodes all resources
+  kubectl resource-view
+  
+  # Show all resources of node marked as master
+  kubectl resource-view -l node-role.kubernetes.io/master
+
+  # Show cpu of node 
+  kubectl resource-view -r cpu
+  
+  # show node host192.0.0.1 resources
+  kubectl resource-view -n host192.0.0.1
+`,
 		SilenceErrors: true,
 		SilenceUsage:  true,
 		PreRun: func(cmd *cobra.Command, args []string) {
@@ -33,32 +43,7 @@ func RootCmd() *cobra.Command {
 			log := logger.NewLogger()
 			log.Info("")
 
-			s := spin.New()
-			finishedCh := make(chan bool, 1)
-			namespaceName := make(chan string, 1)
-			go func() {
-				lastNamespaceName := ""
-				for {
-					select {
-					case <-finishedCh:
-						fmt.Printf("\r")
-						return
-					case n := <-namespaceName:
-						lastNamespaceName = n
-					case <-time.After(time.Millisecond * 100):
-						if lastNamespaceName == "" {
-							fmt.Printf("\r  \033[36mSearching for namespaces\033[m %s", s.Next())
-						} else {
-							fmt.Printf("\r  \033[36mSearching for namespaces\033[m %s (%s)", s.Next(), lastNamespaceName)
-						}
-					}
-				}
-			}()
-			defer func() {
-				finishedCh <- true
-			}()
-
-			if err := plugin.RunPlugin(KubernetesConfigFlags, namespaceName); err != nil {
+			if err := plugin.RunPlugin(KubernetesConfigFlags, cmd); err != nil {
 				return errors.Cause(err)
 			}
 
@@ -69,10 +54,16 @@ func RootCmd() *cobra.Command {
 	}
 
 	cobra.OnInitialize(initConfig)
-
+	var nodeName string
 	KubernetesConfigFlags = genericclioptions.NewConfigFlags(false)
-	KubernetesConfigFlags.AddFlags(cmd.Flags())
+	ResourceBuilderFlags := genericclioptions.NewResourceBuilderFlags().WithAllNamespaces(false).
+		WithFieldSelector("").
+		WithLabelSelector("").
+		WithLatest()
 
+	KubernetesConfigFlags.AddFlags(cmd.Flags())
+	ResourceBuilderFlags.AddFlags(cmd.Flags())
+	cmd.Flags().StringVar(&nodeName, "node", "", "node name")
 	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
 	return cmd
 }
