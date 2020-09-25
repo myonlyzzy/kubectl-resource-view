@@ -1,11 +1,11 @@
-# kubectl-resource-view kubectl
+# resource-view 
 
 A `kubectl` plugin to  view node resources 
 
 ## Quick Start
 
 ```
-kubectl krew install kubectl-resource-view
+kubectl krew install resource-view
 kubectl resource-view
 ```
 ## Usage

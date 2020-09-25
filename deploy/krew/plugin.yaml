@@ -1,7 +1,7 @@
 apiVersion: krew.googlecontainertools.github.com/v1alpha2
 kind: Plugin
 metadata:
-  name: kubectl-resource-view
+  name: resource-view
 spec:
   version: "v0.1.0"
   platforms:
@@ -12,11 +12,11 @@ spec:
     uri: https://github.com/myonlyzzy/kubectl-resource-view/releases/download/v0.1.0/kubectl-resource-view_linux_amd64.tar.gz
     sha256: ""
     files:
-      - from: "./kubectl-resource-view"
+      - from: "./resource-view"
       to: "."
     - from: LICENSE
       to: "."
-    bin: "kubectl-resource-view"
+    bin: "resource-view"
   - selector:
       matchLabels:
         os: darwin
@@ -24,11 +24,11 @@ spec:
     uri: https://github.com/myonlyzzy/kubectl-resource-view/releases/download/v0.1.0/kubectl-resource-view_darwin_amd64.tar.gz
     sha256: ""
     files:
-      - from: "./kubectl-resource-view"
+      - from: "./resource-view"
       to: "."
     - from: LICENSE
       to: "."
-    bin: "kubectl-resource-view"
+    bin: "resource-view"
   - selector:
       matchLabels:
         os: windows
@@ -36,20 +36,20 @@ spec:
     uri: https://github.com/myonlyzzy/kubectl-resource-view/releases/download/v0.1.0/kubectl-resource-view_windows_amd64.zip
     sha256: ""
     files:
-      - from: "/kubectl-resource-view.exe"
+      - from: "/resource-view.exe"
       to: "."
     - from: LICENSE
       to: "."
-    bin: "kubectl-resource-view.exe"
+    bin: "resource-view.exe"
   shortDescription: A new plugin
   homepage: https://github.com/myonlyzzy/kubectl-resource-view
   caveats: |
     Usage:
-      $ kubectl kubectl-resource-view
+      $ kubectl resource-view
 
     For additional options:
-      $ kubectl kubectl-resource-view --help
+      $ kubectl resource-view --help
       or https://github.com/myonlyzzy/kubectl-resource-view/blob/v0.1.0/doc/USAGE.md
 
   description: |
-    This is a new plugin
+    This is a plugin for view node resourde request  and  limit
